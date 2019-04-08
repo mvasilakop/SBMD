@@ -89,7 +89,7 @@ public class TourRatingServiceTest {
     public void lookupRatings() {
         //create mocks of Pageable and Page (only needed in this test)
         Pageable pageable = mock(Pageable.class);
-        Page page = mock(Page.class);
+		Page page = mock(Page.class);
         when(tourRatingRepositoryMock.findByTourId(1, pageable)).thenReturn(page);
 
         //invoke and verify lookupRatings
