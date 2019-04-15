@@ -3,8 +3,10 @@ package com.example.ec.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Security User Entity.
@@ -22,8 +24,16 @@ public class User {
     public User(String username, String password, Role role) {
         this.username = username;
         this.password = password;
-        this.roles = Arrays.asList(role);
+        this.roles = new HashSet<Role>(Arrays.asList(role));
     }
+    
+    public User(String username, String password, Role role, String firstName, String lastName) {
+        this.username = username;
+        this.password = password;
+        this.roles = new HashSet<Role>(Arrays.asList(role));
+        this.firstName = firstName;
+        this.lastName = lastName;
+    } 
 
     @Column(name = "username")
     private String username;
@@ -52,7 +62,7 @@ public class User {
                     referencedColumnName = "id"))
 
 
-    private List<Role> roles;
+    private Set<Role> roles;
 
     public Long getId() {
         return id;
@@ -94,11 +104,27 @@ public class User {
         this.lastName = lastName;
     }
 
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
+    
+    
+//    public Set<GrantedAuthority> getAuthorities() {
+////  		    List<GrantedAuthority> authorities = new ArrayList<>();
+////  		    for (Role role: getRoles()) {
+////  		        authorities.add(new SimpleGrantedAuthority(role.getRolename()));
+//////  		        role.getPrivileges().stream()
+////  		         .map(p -> new SimpleGrantedAuthority(p.getName()))
+////  		         .forEach(authorities::add);
+//    	Set<GrantedAuthority> authorities = new HashSet<>();
+//        for (Role role : this.getRoles()){
+//            authorities.add(new SimpleGrantedAuthority(role.getRolename()));
+//        }
+//  		    System.out.println("TEST - Just before mapping authrities...");
+//  		    return authorities;
+//  		}
 }
