@@ -10,11 +10,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.AbstractMap;
-import java.util.NoSuchElementException;
 
 /**
  * Tour Rating Controller
@@ -47,6 +47,7 @@ public class TourRatingController {
      * @param ratingDto
      */
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_CSR')")
     @ResponseStatus(HttpStatus.CREATED)
     public void createTourRating(@PathVariable(value = "tourId") int tourId, @RequestBody @Validated RatingDto ratingDto) {
         LOGGER.info("POST /tours/{}/ratings", tourId);
@@ -61,6 +62,7 @@ public class TourRatingController {
      * @param customers
      */
     @PostMapping("/{score}")
+    @PreAuthorize("hasRole('ROLE_CSR')")
     @ResponseStatus(HttpStatus.CREATED)
     public void createManyTourRatings(@PathVariable(value = "tourId") int tourId,
                                       @PathVariable(value = "score") int score,
@@ -82,7 +84,8 @@ public class TourRatingController {
                                                           PagedResourcesAssembler<TourRating> pagedAssembler) {
         LOGGER.info("GET /tours/{}/ratings", tourId);
         Page<TourRating> tourRatingPage = tourRatingService.lookupRatings(tourId, pageable);
-        return pagedAssembler.toResource(tourRatingPage, assembler);
+        PagedResources<RatingDto> result =  pagedAssembler.toResource(tourRatingPage, assembler);
+        return result;
     }
 
     /**
@@ -105,6 +108,7 @@ public class TourRatingController {
      * @return The modified Rating DTO.
      */
     @PutMapping
+    @PreAuthorize("hasRole('ROLE_CSR')")
     public RatingDto updateWithPut(@PathVariable(value = "tourId") int tourId, @RequestBody @Validated RatingDto ratingDto) {
         LOGGER.info("PUT /tours/{}/ratings", tourId);
         return toDto(tourRatingService.update(tourId, ratingDto.getCustomerId(),
@@ -118,6 +122,7 @@ public class TourRatingController {
      * @return The modified Rating DTO.
      */
     @PatchMapping
+    @PreAuthorize("hasRole('ROLE_CSR')")
     public RatingDto updateWithPatch(@PathVariable(value = "tourId") int tourId, @RequestBody @Validated RatingDto ratingDto) {
         LOGGER.info("PATCH /tours/{}/ratings", tourId);
         return toDto(tourRatingService.updateSome(tourId, ratingDto.getCustomerId(),
@@ -131,6 +136,7 @@ public class TourRatingController {
      * @param customerId
      */
     @DeleteMapping("/{customerId}")
+    @PreAuthorize("hasRole('ROLE_CSR')")
     public void delete(@PathVariable(value = "tourId") int tourId, @PathVariable(value = "customerId") int customerId) {
         LOGGER.info("DELETE /tours/{}/ratings/{}", tourId, customerId);
         tourRatingService.delete(tourId, customerId);
@@ -146,18 +152,5 @@ public class TourRatingController {
         return assembler.toResource(tourRating);
     }
 
-    /**
-     * Exception handler if NoSuchElementException is thrown in this Controller
-     *
-     * @param ex
-     * @return Error message String.
-     */
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NoSuchElementException.class)
-    public String return404(NoSuchElementException ex) {
-        LOGGER.error("Unable to complete transaction", ex);
-        return ex.getMessage();
-
-    }
 
 }

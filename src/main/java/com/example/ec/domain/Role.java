@@ -1,29 +1,20 @@
- package com.example.ec.domain;
+package com.example.ec.domain;
+
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 
 /**
  * Entity of a Security Role
  * Created by Mary Ellen BOwman
- * Modified by Michail Vasilakopoulos (10/04/2019)
  */
 @Entity
 @Table(name="security_role")
-public class Role  {
+public class Role  implements GrantedAuthority {
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-//    public Role(String rolename, String description) {
-//        this.rolename = rolename;
-//        this.description = description;
-//    }
-
-    /**
-     * Default Constructor.
-     */
-    protected Role() {
-    }
 
     @Column(name="role_name")
     private String rolename;
@@ -31,6 +22,10 @@ public class Role  {
     @Column(name="description")
     private String description;
 
+    @Override
+    public String getAuthority() {
+        return rolename;
+    }
     public Long getId() {
         return id;
     }
@@ -39,12 +34,12 @@ public class Role  {
         this.id = id;
     }
 
-    public String getRolename() {
+    public String getRoleName() {
         return rolename;
     }
 
-    public void setRoleName(String rolename) {
-        this.rolename = rolename;
+    public void setRoleName(String roleName) {
+        this.rolename = roleName;
     }
 
     public String getDescription() {

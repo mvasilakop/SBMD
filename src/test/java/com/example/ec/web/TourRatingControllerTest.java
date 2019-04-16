@@ -108,7 +108,7 @@ public class TourRatingControllerTest {
     @Test
     public void getAllRatingsForTour() throws Exception {
         List<TourRating> listOfTourRatings = Arrays.asList(tourRatingMock);
-        Page<TourRating> page = new PageImpl(listOfTourRatings, PageRequest.of(0,10),1);
+        Page<TourRating> page = new PageImpl<TourRating>(listOfTourRatings, PageRequest.of(0,10),1);
         when(serviceMock.lookupRatings(anyInt(),any(Pageable.class))).thenReturn(page);
 
         ResponseEntity<String> response = restTemplate.getForEntity(TOUR_RATINGS_URL,String.class);
