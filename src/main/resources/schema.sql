@@ -1,4 +1,3 @@
-
 CREATE TABLE security_role (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   description varchar(100) DEFAULT NULL,
